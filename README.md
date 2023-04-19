@@ -1,109 +1,70 @@
-# YaMDb API
-![Python version](https://img.shields.io/badge/python-3.7-yellow) 
-![Django version](https://img.shields.io/badge/django-2.2-orange) 
-![workflow status](https://github.com/AleksandrUsolcev/yamdb_final/actions/workflows/yamdb_workflow.yml/badge.svg)
+![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yaml/badge.svg)
+### Адрес сервера:
+- http://51.250.14.77
 
-YaMDb API - демо: [main](http://yamdb-usolcev.ddns.net/api/v1/) | [redoc](http://yamdb-usolcev.ddns.net/redoc/)
 
-Проект YaMDb собирает отзывы (Review) пользователей на произведения (Titles).
-Произведения делятся на категории: "Книги", "Фильмы", "Музыка". Список
-категорий (Category) может быть расширен администратором.
+### Как запустить проект:
 
-В каждой категории есть произведения: книги, фильмы или музыка. 
+#### Инструкции для развертывания и запуска приложения
+- Зайдите на удаленный сервер
+- Установите docker 
+  ```bash
+  sudo apt install docker.io
+  ```
 
-Произведению может быть присвоен жанр (Genre) из списка предустановленных (
-например, "Сказка", "Рок" или "Артхаус"). Новые жанры может создавать только
-администратор.
+- Установите docker-compose на сервер:
+  ```bash
+  curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+  ```
 
-Благодарные или возмущённые пользователи оставляют к произведениям текстовые
-отзывы (Review) и ставят произведению оценку в диапазоне от одного до десяти (
-целое число); из пользовательских оценок формируется усреднённая оценка
-произведения — рейтинг (целое число). На одно произведение пользователь может
-оставить только один отзыв.
+- Остановите службу nginx командой
+  ```bash
+  sudo systemctl stop nginx
+  ```
 
-## Технологии
+- Локально отредактируйте файл infra/nginx/default.conf, обязательно в строке server_name вписать IP-адрес сервера
+- Скопируйте файлы docker-compose.yml и default.conf из директории infra на сервер, также создав папку nginx:
+  ```bash
+  scp .\infra\docker-compose.yaml <username>@<host>:/home/<username>/docker-compose.yaml
+  scp .\infra\nginx\default.conf <username>@<host>:/home/<username>/nginx/default.conf
+  ```
+- Для работы с Workflow добавьте в Secrets GitHub переменные окружения для работы:
+  ```
+  - DOCKER_USERNAME=<логин от аккаунта на Docker Hub>
+  - DOCKER_PASSWORD=<пароль от аккаунта на Docker Hub>
 
-- Python 3.7+
-- [django](https://github.com/django/django) 2.2.16
-- [django-rest-framework](https://github.com/encode/django-rest-framework)
-  3.12.4
-- [Simple JWT](https://github.com/jazzband/djangorestframework-simplejwt) 5.2.0
+  - HOST=<публичный адрес сервера для доступа по SSH>
+  - USER=<username для подключения к серверу> 
+  - SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>
+  - PASSPHRASE=<пароль для сервера, если он установлен>
 
-## Запуск проекта
+  - DB_ENGINE=<django.db.backends.postgresql>
+  - DB_NAME=<имя базы данных postgres>
+  - DB_POSTGRES_USER=<пользователь бд>
+  - DB_POSTGRES_PASSWORD=<пароль>
+  - DB_HOST=<db>
+  - DB_PORT=<5432>
 
-Клонировать репозиторий и перейти в корень проекта
+  - TELEGRAM_TOKEN=<токен вашего бота>. Получить этот токен можно у бота @BotFather
+  - TELEGRAM_TO=<ID чата, в который придет сообщение>. Узнать свой ID можно у бота @userinfobot
+  ```
 
-```bash
-git clone https://github.com/AleksandrUsolcev/infra_sp2.git
-cd infra_sp2
-``` 
-
-Создать файл переменного окружения и заполнить по [образцу](/infra/example.env)
-
-```bash
-cd infra/
-nano .env
-``` 
-
-Развернуть docker контейнер
-
-```
-docker-compose up -d --build 
-``` 
-
-Выполнить миграции, создать суперпользователя, собрать статику
-
-```bash
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --no-input
-```
-
-Загрузить тестовый [дамп](/infra/fixtures.json) базы данных*
-
-```bash
-docker-compose exec web python manage.py loaddata fixtures.json
-```
-
-<em>*опционально для выполнения. Помимо тестовых данных, дамп включает в себя уже созданного суперпользователя **admin** с паролем **admin12345**</em>
-
-## Получение персонального токена
-
-Для взаимодействия с API необходимо завести учетную запись пользователя,
-или суперпользователя и иметь персональный токен, для чего необходимо
-перейти по адресу .../api/v1/auth/signup/ и отправить POST запрос с
-именем и адресом электронной почты пользователя
-
-```
-{
-    "username": "example_name",
-    "email": "example_email"
-}
-``` 
-
-После успешной регистрации на указаный email придет секретный код, который
-необходимо скопировать в поле "confirmation_code" по адресу ...
-/api/v1/auth/token/ и получить персональный токен
-
-```
-{
-    "username": "example_name",
-    "confirmation_code": "your_code"
-}
-``` 
-
-Далее передаем полученный токен в headers
-
-```
-KEY: Authorization
-VALUE: Bearer <ваш токен>
-``` 
-
-## Примеры запросов
-
-**Список запросов можно посмотреть перейдя на .../redoc/
-развернутого проекта**
-
-## Автор проекта
-
-[Александр Усольцев](https://github.com/AleksandrUsolcev)
+- Соберите и запустите контейнеры на сервере:
+  ```bash
+  docker-compose up -d --build
+  ```
+- После успешной сборки выполните следующие действия (только при первом деплое):
+    * проведите миграции внутри контейнеров:
+      ```bash
+      docker-compose exec web python manage.py makemigrations reviews
+      docker-compose exec web python manage.py migrate
+      ```
+    * соберите статику проекта:
+      ```bash
+      docker-compose exec web python manage.py collectstatic --no-input
+      ```  
+    * Создайте суперпользователя Django, после запроса от терминала введите логин и пароль для суперпользователя:
+      ```bash
+      docker-compose exec web python manage.py createsuperuser
+      ```
