@@ -1,4 +1,4 @@
-![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yaml/badge.svg)
+![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yml/badge.svg)
 ### Работа с сервисом:
 
 Сервис будет доступен:  
