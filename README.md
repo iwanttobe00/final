@@ -1,6 +1,13 @@
 ![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yml/badge.svg)
-### Адрес сервера:
-- http://158.160.98.225
+### Работа с сервисом:
+
+Сервис будет доступен:  
+
+при локальном развертывании - http://localhost/api/v1  
+Документация - http://localhost/redoc  
+
+При развертывании на сервере - http://<ip_адрес_хоста>/api/v1  
+Документация - http://<ip_адрес_хоста>/redoc
 
 
 ### Как запустить проект:
