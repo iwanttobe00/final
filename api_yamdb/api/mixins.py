@@ -1,7 +1,13 @@
-from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   ListModelMixin)
+from rest_framework import mixins, viewsets
 
 
-class CreateDestroyListMixin(CreateModelMixin, DestroyModelMixin,
-                             ListModelMixin):
+class CreateListDestroyModelViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    """
+    Вьюсет, который может создавать, возвращать и удалять список объектов.
+    """
     pass
