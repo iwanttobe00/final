@@ -1,4 +1,4 @@
-![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yaml/badge.svg)
+![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yml/badge.svg)
 ### Адрес сервера:
 - http://51.250.14.77
 
