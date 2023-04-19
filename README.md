@@ -1,6 +1,6 @@
 ![example workflow](https://github.com/iwanttobe00/final/actions/workflows/yamdb_workflow.yml/badge.svg)
 ### Адрес сервера:
-- http://51.250.14.77
+- http://158.160.98.225
 
 
 ### Как запустить проект:
